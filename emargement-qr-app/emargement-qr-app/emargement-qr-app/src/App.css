@@ -387,6 +387,111 @@ button.ghost {
   color: #b7b7c5;
 }
 
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  align-items: end;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #cfd8ff;
+  font-size: 14px;
+}
+
+.form-field input,
+.form-field select,
+.input,
+.select {
+  background: #0f1429;
+  color: #fff;
+  border: 1px solid #253358;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 15px;
+  outline: none;
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.action-card {
+  background: linear-gradient(135deg, #131b32, #0f1427);
+  border-radius: 16px;
+  border: 1px solid #1f2a48;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.table-wrapper {
+  overflow: auto;
+  border: 1px solid #1f2a48;
+  border-radius: 12px;
+}
+
+.attendee-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #e9ecff;
+}
+
+.attendee-table th,
+.attendee-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #1f2a48;
+  text-align: left;
+}
+
+.attendee-table th {
+  background: #11182e;
+  font-weight: 600;
+}
+
+.attendee-table tr.present td {
+  color: #7af5ff;
+}
+
+.form-inline {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.form-inline input {
+  flex: 1;
+  min-width: 140px;
+  background: #0f1429;
+  color: #fff;
+  border: 1px solid #253358;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.scanner-wrapper {
+  border: 1px dashed #2e3b66;
+  border-radius: 12px;
+  padding: 12px;
+  background: #0f1429;
+}
+
+.small {
+  font-size: 12px;
+}
+
 @media (max-width: 480px) {
   .app-shell {
     padding: 16px 8px 48px;
