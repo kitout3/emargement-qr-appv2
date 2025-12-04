@@ -7,19 +7,37 @@ const QRScanner = ({ onValidation, autoRestart = false }) => {
   const [error, setError] = useState(null);
   const html5QrCodeRef = useRef(null);
 
+  const stopScanner = async () => {
+    const scanner = html5QrCodeRef.current;
+    if (!scanner) return;
+
+    try {
+      await scanner.stop().catch(() => {});
+      await scanner.clear();
+    } catch (err) {
+      console.error('Erreur lors de la fermeture du scanner', err);
+    } finally {
+      html5QrCodeRef.current = null;
+      setIsScanning(false);
+    }
+  };
+
   useEffect(() => {
     return () => {
-      if (html5QrCodeRef.current?.isScanning) {
-        html5QrCodeRef.current.stop().catch(console.error);
-      }
+      stopScanner();
     };
   }, []);
 
   const startScanning = async () => {
+    if (isScanning) return;
     setError(null);
     setScanResult(null);
 
     try {
+      if (html5QrCodeRef.current) {
+        await stopScanner();
+      }
+
       html5QrCodeRef.current = new Html5Qrcode('qr-reader');
 
       await html5QrCodeRef.current.start(
@@ -29,8 +47,7 @@ const QRScanner = ({ onValidation, autoRestart = false }) => {
           qrbox: { width: 250, height: 250 },
         },
         async (decodedText) => {
-          await html5QrCodeRef.current.stop();
-          setIsScanning(false);
+          await stopScanner();
           validateAttendance(decodedText);
         },
         () => {}
@@ -39,14 +56,12 @@ const QRScanner = ({ onValidation, autoRestart = false }) => {
       setIsScanning(true);
     } catch (err) {
       setError("Impossible d'accéder à la caméra. Vérifiez les permissions.");
+      await stopScanner();
     }
   };
 
   const stopScanning = async () => {
-    if (html5QrCodeRef.current?.isScanning) {
-      await html5QrCodeRef.current.stop();
-      setIsScanning(false);
-    }
+    await stopScanner();
   };
 
   const validateAttendance = async (qrCode) => {

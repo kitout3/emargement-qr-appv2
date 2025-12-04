@@ -45,25 +45,25 @@ const initialHistory = [
   },
 ];
 
-const initialSummary = {
-  totalInvites: 304,
-  present: 32,
-  pending: 17,
-};
-
 function App() {
   const [multiScan, setMultiScan] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const [history, setHistory] = useState(initialHistory);
-  const [summary, setSummary] = useState(initialSummary);
+
+  const totalInvites = 304;
+
+  const presentCount = useMemo(
+    () => history.filter((entry) => entry.status === 'ok').length,
+    [history]
+  );
+
+  const pendingCount = useMemo(
+    () => Math.max(totalInvites - presentCount, 0),
+    [presentCount, totalInvites]
+  );
 
   const handleValidation = ({ qrCode, isValid }) => {
     setShowScanner(false);
-    setSummary((prev) => ({
-      ...prev,
-      present: isValid ? prev.present + 1 : prev.present,
-      pending: Math.max(prev.pending - 1, 0),
-    }));
 
     const now = new Date();
     const formattedTime = new Intl.DateTimeFormat('fr-FR', {
@@ -119,16 +119,16 @@ function App() {
           <div className="stats-grid">
             <div className="stat-card">
               <p className="stat-label">Total invités</p>
-              <p className="stat-value">{summary.totalInvites}</p>
+              <p className="stat-value">{totalInvites}</p>
               <span className="stat-tag">Invités enregistrés</span>
             </div>
             <div className="stat-card">
               <p className="stat-label">Invités présents</p>
-              <p className="stat-value">{summary.present}</p>
+              <p className="stat-value">{presentCount}</p>
             </div>
             <div className="stat-card">
               <p className="stat-label">QR en attente</p>
-              <p className="stat-value">{summary.pending}</p>
+              <p className="stat-value">{pendingCount}</p>
             </div>
             <div className="stat-card">
               <p className="stat-label">{modeBadge}</p>
@@ -156,7 +156,15 @@ function App() {
               <p className="accent">Lundi 27 janvier 2024</p>
             </div>
           </div>
-          <p className="alert">⚠️ Aucun invité présent. Veuillez scanner le QR code pour enregistrer les invités.</p>
+          {!presentCount ? (
+            <p className="alert">
+              ⚠️ Aucun invité présent. Veuillez scanner le QR code pour enregistrer les invités.
+            </p>
+          ) : (
+            <p className="muted">
+              {presentCount} invité(s) déjà validé(s) pour cette session. Continuez à scanner pour tenir la liste à jour.
+            </p>
+          )}
           <div className="actions">
             <button className="primary" onClick={() => setShowScanner(true)}>
               Scanner maintenant
